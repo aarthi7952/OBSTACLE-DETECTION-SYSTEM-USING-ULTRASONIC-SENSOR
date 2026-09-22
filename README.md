@@ -19,6 +19,8 @@ Tinkercad provides a simulation environment where this circuit can be virtually 
 
 
 ## Circuit Diagram:
+<img width="940" height="480" alt="image" src="https://github.com/user-attachments/assets/88ebfb31-ea70-49eb-81ee-e2bdd6753f98" />
+
  
 ## Procedure: //Modify the procedure based on your circuit
 
@@ -53,14 +55,72 @@ Step 7: Save Your Work
 
 
 ## Code:
+```
+#include "ArduinoGraphics.h"
+#include "Arduino_LED_Matrix.h"
+
+ArduinoLEDMatrix matrix;
+
+#define TRIG_PIN 9
+#define ECHO_PIN 10
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+
+  matrix.begin();
+}
+
+void loop() {
+  // Measure distance
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH);
+
+  float distance = duration * 0.0343 / 2.0;
+
+  Serial.print("Distance: ");
+  Serial.print(distance, 1);
+  Serial.println(" cm");
+
+  // Convert to integer for display
+  int d = (int)(distance + 0.5);
+
+  char text[5];
+  sprintf(text, "%d", d);
+
+  // Static display
+  matrix.beginDraw();
+
+  matrix.clear();               // Clear previous text
+  matrix.stroke(0xFFFFFFFF);
+  matrix.textFont(Font_4x6);
+
+  // Draw text (no scrolling)
+  matrix.text(text, 0, 7);
+
+  matrix.endDraw();
+
+  delay(100);
+}
+}
+```
 
 
 ## Output:
- 
+ <img width="556" height="318" alt="image" src="https://github.com/user-attachments/assets/ff596d1f-7140-4d90-afe1-dd2693214b1e" />
+
+
+<img width="1600" height="900" alt="image" src="https://github.com/user-attachments/assets/6f94f976-e06a-4bdf-82a0-ee9237bbc9a4" />
 
 
 ## Result
+The simulation successfully measured the distance between the ultrasonic sensor HC-SR04 and the object. The real-time distance values were accurately displayed on the serial monitor in centimeters.
 
-
-Result:
-The simulation successfully measured the distance between the ultrasonic sensor  HC-SR04 and the object. The real-time distance values were accurately displayed on the serial monitor in centimeters.
